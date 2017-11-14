@@ -86,11 +86,13 @@ trait ModelTrait{
 		$columns = [];
 		if($this->attribute_info){
 			foreach ($this->attribute_info as $key => $value) {
-				$column = [
-					'title' => $this->getAttributeName($key),
-					'key' => $key,
-				];
-				$columns[] = $column;
+				if(isset($value['table']) && $value['table'] == true){
+					$column = [
+						'title' => $this->getAttributeName($key),
+						'key' => $key,
+					];
+					$columns[] = $column;
+				}
 			}
 		}
 		return $columns;
@@ -132,5 +134,19 @@ trait ModelTrait{
 			$form[] = $value;
 		}
 		return $form;
+	}
+
+	public function scopeTableList($query){
+		$fields = [];
+		if($this->attribute_info){
+			foreach ($this->attribute_info as $key => $value) {
+				if(isset($value['table']) && $value['table'] == true){
+					$fields[] = $key;
+				}
+			}
+		}
+		if($fields){
+			$query->select($fields);
+		}
 	}
 }

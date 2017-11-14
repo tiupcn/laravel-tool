@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 trait ControllerTrait{
 	public function index(Request $request){
-		return $this->model->search($request->all())->page();	
+		return $this->model->tableList()->search($request->all())->page();	
 	}
 
 	public function create(){
@@ -26,9 +26,9 @@ trait ControllerTrait{
 	}
 
 	public function store(Request $request){
-		$this->validator($request);
+		$data = $this->validator($request);
 		try {
-			$model = $this->model->create($request->all());
+			$model = $this->model->create($data);
 			return $model->toForm();
 		} catch (\Exception $e) {
 			return $this->response($e->getMessage(), 500);
@@ -63,20 +63,23 @@ trait ControllerTrait{
 	protected function validator(Request $request){
 		$rules = [];
 		$attributes = [];
+		$data = $request->all();
+		$result = [];
 		foreach ($this->model->attribute_info as $key => $value) {
 			if(isset($value['rule'])){
 				$rules[$key] = $value['rule'];
 				$attributes[$key] = $this->model->getAttributeName($key);
 			}
+			$result[$key] = $data[$key];
 		}
 		$this->validate($request, $rules, [], $attributes);
+		return $result;
 	}
 	public function update(Request $request,$id){
-		$this->validator($request);
+		$data = $this->validator($request);
 		$model = $this->model->find($id);
-		$model->fill($request->all());
+		$model->fill($data);
 		$model->save();
-		$model = $this->attachMedia($model, $request);
 		return $model->toForm();
 	}
 
@@ -85,20 +88,5 @@ trait ControllerTrait{
 			$data = ['message' => $data];
 		}
 		return response()->json($data, $status);
-	}
-
-	public function attachMedia($model, $request){
-		foreach ($model->attribute_info as $key => $value) {
-			if($value['type'] == 'media'){
-				if($value['multiple']){
-					$ids = Arr::pluck($request->{$key}, 'id');
-				}else{
-					$ids = $request->{$key}['id'];
-				}
-				
-				$ret = $model->syncMedia($ids, $key);
-			}
-		}
-		return $model;
 	}
 }
