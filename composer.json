@@ -1,0 +1,16 @@
+{
+    "name": "tiup/laravel-tool",
+    "description": "laravel-tool",
+    "authors": [
+        {
+            "name": "lizw",
+            "email": "lizw@tiup.us"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Tiup\\LaravelTool\\": "src"
+        }
+    },
+    "require": {}
+}
