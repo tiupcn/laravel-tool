@@ -59,14 +59,15 @@ trait ModelTrait{
 	}
 	//分页查询
 	public function scopePage($query, $page = null, $perpage = null){
-		$query = $query->toBase();
+
 		if(empty($page)){
 			$page = Input::get('page', 1);
 		}
 		if(empty($perpage)){
 			$perpage = Input::get('perpage', 10);
 		}
-		$total = $query->getCountForPagination();
+		
+		$total = $query->count();
 		$result = $query->forPage($page, $perpage)->get();
 		return array('total' => $total, 'data' => $result);
 	}
