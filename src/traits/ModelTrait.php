@@ -15,40 +15,6 @@ trait ModelTrait{
 	}
 
 	/**
-	 * 获取作为码表时的码表代码
-	 **/
-	public function getMapperIdAttribute(){
-		return $this->attributes[$this->primaryKey];
-	}
-
-	/**
-	 * 获取作为码表时的码表值
-	 **/
-	public function getMapperNameAttribute(){
-		return $this->attributes['name'];
-	}
-
-	/**
-	 * 生成码表
-	 **/
-	public function scopeToMappers($query, $id = null){
-		if($id){
-			$query->where($this->primaryKey, $id);
-		}
-		$data = $query->get();
-		$mappers = [];
-		foreach ($data as $key => $value) {
-			// print_r($value);
-			$mapper = [
-				'id' => $value->mapper_id,
-				'name' => $value->mapper_name
-			];
-			$mappers[] = $mapper;
-		}
-		return $mappers;
-	}
-
-	/**
 	 * 搜索接口
 	 **/
 	public function scope_Query($query, $keyword){
@@ -151,3 +117,4 @@ trait ModelTrait{
 		}
 	}
 }
+
