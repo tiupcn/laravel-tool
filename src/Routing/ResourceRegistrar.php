@@ -12,7 +12,7 @@ class ResourceRegistrar extends OriginalRegistrar
      *
      * @var array
      */
-    protected $resourceDefaults = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'columns','show','delete'];
+    protected $resourceDefaults = ['index', 'create', 'store', 'edit', 'update', 'destroy', 'columns','show','delete','search'];
 
 
     /**
@@ -36,6 +36,13 @@ class ResourceRegistrar extends OriginalRegistrar
     {
         $uri = $this->getResourceUri($name).'/delete';
         $action = $this->getResourceAction($name, $controller, 'delete', $options);
+        return $this->router->post($uri, $action);
+    }
+
+    protected function addResourceSearch($name, $base, $controller, $options)
+    {
+        $uri = $this->getResourceUri($name).'/search';
+        $action = $this->getResourceAction($name, $controller, 'index', $options);
         return $this->router->post($uri, $action);
     }
 }
