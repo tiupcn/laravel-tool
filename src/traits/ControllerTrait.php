@@ -65,6 +65,9 @@ trait ControllerTrait{
 		$attributes = [];
 		$data = $request->all();
 		$result = [];
+		if(empty($this->model->attribute_info)){
+			return $data;
+		}
 		foreach ($this->model->attribute_info as $key => $value) {
 			if(isset($value['rule'])){
 				$rules[$key] = $value['rule'];
